@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  redis:
+    container_name: cache
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+    networks:
+      - node
+  node:
+    container_name: node
+    build: ./docker/node
+    volumes:
+      - ./:/usr/src/app:cached
+    ports:
+      - "3000:3000"
+    networks:
+      - node
+
+volumes:
+  redis:
+networks:
+  node:
+  redis:
+
