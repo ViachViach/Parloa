@@ -1,9 +1,9 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { AppModule } from './../src/app.module';
+import { AppModule } from './../../src/app.module';
 import { INestApplication } from '@nestjs/common';
 
-describe('AppController (e2e)', () => {
+describe('GitHub (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -12,17 +12,22 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    await app.init();
   });
 
   afterAll(async () => {
     await app.close();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  it('/ GET', async function () {
+    const res = await request(app.getHttpServer())
+      .get('/v1/github')
+      .send({
+        data: '2020-04-01',
+        limit: 10,
+      })
+      .then((res) => res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(10);
   });
 });
